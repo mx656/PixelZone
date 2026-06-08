@@ -39,6 +39,7 @@
     color: #00f5ff;
     text-shadow: 0 0 20px rgba(0,245,255,0.5);
     letter-spacing: 2px;
+    cursor: pointer;
   }
 
   .logo span { color: #ff2d78; }
@@ -47,7 +48,7 @@
   nav a {
     color: #8888cc; text-decoration: none; font-size: 14px;
     font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-    transition: color 0.2s;
+    transition: color 0.2s; cursor: pointer;
   }
   nav a:hover, nav a:focus { color: #00f5ff; outline: none; }
 
@@ -61,6 +62,17 @@
   }
 
   .nav-btn:hover, .nav-btn:focus { transform: scale(1.05); outline: none; }
+
+  .user-info {
+    color: #8888cc; font-size: 12px; margin-left: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .user-avatar {
+    width: 32px; height: 32px; background: linear-gradient(135deg, #ff2d78, #ff6b2d);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; cursor: pointer;
+  }
 
   .ad-banner {
     background: rgba(20,20,50,0.8);
@@ -318,6 +330,112 @@
 
   .ic-ad-btn:hover, .ic-ad-btn:focus { transform: scale(1.05); outline: none; }
 
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s;
+  }
+
+  .modal.show { display: flex; align-items: center; justify-content: center; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-content {
+    background: rgba(10, 10, 30, 0.98);
+    border: 2px solid #00f5ff;
+    border-radius: 10px;
+    padding: 0;
+    max-width: 900px;
+    width: 95%;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 0 50px rgba(0, 245, 255, 0.3);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(20, 20, 50, 0.8);
+    border-bottom: 1px solid #2a2a5a;
+  }
+
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: #00f5ff;
+    font-weight: 700;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: #00f5ff;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .close-btn:hover { color: #ff2d78; }
+
+  .modal-body {
+    padding: 20px;
+    min-height: 400px;
+  }
+
+  .game-canvas {
+    width: 100%;
+    height: 400px;
+    background: #0a0a1a;
+    border: 1px solid #2a2a5a;
+    border-radius: 5px;
+  }
+
+  .game-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(20, 20, 50, 0.6);
+    border-radius: 5px;
+  }
+
+  .score-item {
+    color: #00f5ff;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+  }
+
+  .game-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+  }
+
+  .game-btn {
+    background: linear-gradient(135deg, #ff2d78, #ff6b2d);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+
+  .game-btn:hover { transform: scale(1.05); }
+
   footer {
     background: rgba(5,5,15,0.95);
     border-top: 1px solid #1a1a3a;
@@ -325,7 +443,7 @@
     color: #444466; font-size: 13px;
   }
   footer .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap; }
-  footer .footer-links a { color: #555588; text-decoration: none; font-size: 12px; transition: color 0.2s; }
+  footer .footer-links a { color: #555588; text-decoration: none; font-size: 12px; transition: color 0.2s; cursor: pointer; }
   footer .footer-links a:hover, footer .footer-links a:focus { color: #8888cc; outline: none; }
 
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
@@ -394,21 +512,27 @@
 <div class="scanlines"></div>
 
 <header>
-  <div class="logo">PIXEL<span>ZONE</span></div>
+  <div class="logo" onclick="location.reload()">PIXEL<span>ZONE</span></div>
   <nav>
-    <a href="#">Games</a>
-    <a href="#">Leaderboard</a>
-    <a href="#">Tournaments</a>
-    <a href="#">Community</a>
+    <a onclick="navigateTo('games')">Games</a>
+    <a onclick="navigateTo('leaderboard')">Leaderboard</a>
+    <a onclick="navigateTo('tournaments')">Tournaments</a>
+    <a onclick="navigateTo('community')">Community</a>
   </nav>
-  <button class="nav-btn">SIGN UP FREE</button>
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <div class="user-info" id="userInfo">
+      <span id="userGreeting">Guest</span>
+      <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()">G</div>
+    </div>
+    <button class="nav-btn" id="signupBtn" onclick="openSignUpModal()">SIGN UP FREE</button>
+  </div>
 </header>
 
 <!-- TOP AD BANNER -->
 <div class="ad-banner">
   <span class="ad-label">AD</span>
   <div class="ad-content">🎮 <strong>GameFuel Energy Drink</strong> — The official drink of champions. Get 20% off your first order!</div>
-  <button class="ad-cta">SHOP NOW</button>
+  <button class="ad-cta" onclick="showAlert('Thank you for your interest!')">SHOP NOW</button>
 </div>
 
 <!-- HERO -->
@@ -416,15 +540,15 @@
   <div class="hero-title">PLAY.<br>COMPETE.<br>WIN.</div>
   <p class="hero-sub">500+ free games. Real prizes. Global leaderboards. No download needed.</p>
   <div class="hero-btns">
-    <button class="btn-primary">▶ PLAY NOW</button>
-    <button class="btn-secondary">🏆 VIEW TOURNAMENTS</button>
+    <button class="btn-primary" onclick="navigateTo('games')">▶ PLAY NOW</button>
+    <button class="btn-secondary" onclick="navigateTo('tournaments')">🏆 VIEW TOURNAMENTS</button>
   </div>
 </div>
 
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stat-item">
-    <div class="stat-num cyan">2.4M</div>
+    <div class="stat-num cyan" id="playersOnline">2.4M</div>
     <div class="stat-lbl">Players Online</div>
   </div>
   <div class="stat-item">
@@ -445,73 +569,8 @@
 <div class="main-layout">
   <div class="content">
     <div class="section-title">🔥 HOT GAMES</div>
-    <div class="games-grid">
-      <div class="game-card">
-        <div class="game-thumb blue">🚀<span class="hot-badge">HOT</span></div>
-        <div class="game-info">
-          <div class="game-name">STAR BLASTER</div>
-          <div class="game-meta">
-            <span class="game-genre">Shooter</span>
-            <span class="game-rating">★ 4.9</span>
-          </div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb purple">🧩</div>
-        <div class="game-info">
-          <div class="game-name">MIND MAZE</div>
-          <div class="game-meta">
-            <span class="game-genre">Puzzle</span>
-            <span class="game-rating">★ 4.8</span>
-          </div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb green">🏎️<span class="new-badge">NEW</span></div>
-        <div class="game-info">
-          <div class="game-name">TURBO DRIFT</div>
-          <div class="game-meta">
-            <span class="game-genre">Racing</span>
-            <span class="game-rating">★ 4.7</span>
-          </div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb red">⚔️<span class="hot-badge">HOT</span></div>
-        <div class="game-info">
-          <div class="game-name">DUNGEON WARS</div>
-          <div class="game-meta">
-            <span class="game-genre">RPG</span>
-            <span class="game-rating">★ 4.9</span>
-          </div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb orange">⚽</div>
-        <div class="game-info">
-          <div class="game-name">GOAL STRIKER</div>
-          <div class="game-meta">
-            <span class="game-genre">Sports</span>
-            <span class="game-rating">★ 4.6</span>
-          </div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb teal">🃏<span class="new-badge">NEW</span></div>
-        <div class="game-info">
-          <div class="game-name">CARD KING</div>
-          <div class="game-meta">
-            <span class="game-genre">Strategy</span>
-            <span class="game-rating">★ 4.8</span>
-          </div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
+    <div class="games-grid" id="hotGamesGrid">
+      <!-- Games will be populated by JavaScript -->
     </div>
 
     <!-- IN-CONTENT AD -->
@@ -522,35 +581,12 @@
         <h3>UPGRADE YOUR SETUP</h3>
         <p>ProGear Gaming Chairs — engineered for marathon sessions. Free shipping on orders over R1,500.</p>
       </div>
-      <button class="ic-ad-btn">GET 15% OFF</button>
+      <button class="ic-ad-btn" onclick="showAlert('Get 15% OFF on Gaming Chairs!')">GET 15% OFF</button>
     </div>
 
     <div class="section-title">⚡ NEW RELEASES</div>
-    <div class="games-grid">
-      <div class="game-card">
-        <div class="game-thumb purple">👾<span class="new-badge">NEW</span></div>
-        <div class="game-info">
-          <div class="game-name">ALIEN SURGE</div>
-          <div class="game-meta"><span class="game-genre">Arcade</span><span class="game-rating">★ 4.5</span></div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb blue">🧊<span class="new-badge">NEW</span></div>
-        <div class="game-info">
-          <div class="game-name">ICE TOWER</div>
-          <div class="game-meta"><span class="game-genre">Platformer</span><span class="game-rating">★ 4.4</span></div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
-      <div class="game-card">
-        <div class="game-thumb green">🌿<span class="new-badge">NEW</span></div>
-        <div class="game-info">
-          <div class="game-name">JUNGLE RUN</div>
-          <div class="game-meta"><span class="game-genre">Runner</span><span class="game-rating">★ 4.6</span></div>
-          <button class="play-btn">▶ PLAY</button>
-        </div>
-      </div>
+    <div class="games-grid" id="newGamesGrid">
+      <!-- Games will be populated by JavaScript -->
     </div>
   </div>
 
@@ -560,40 +596,13 @@
       <span class="ad-label">SPONSORED</span>
       <div class="sidebar-ad-img">🎧</div>
       <p><strong>HyperX Cloud III</strong> — Hear every enemy footstep</p>
-      <button class="sidebar-ad-btn">BUY NOW</button>
+      <button class="sidebar-ad-btn" onclick="showAlert('Redirecting to HyperX store...')">BUY NOW</button>
     </div>
 
     <div class="leaderboard">
       <div class="lb-title">🏆 TOP PLAYERS</div>
-      <div class="lb-row">
-        <span class="lb-rank gold">1</span>
-        <div class="lb-avatar" style="background:#2a1a00; font-size:16px;">👑</div>
-        <span class="lb-name">xXProGamer</span>
-        <span class="lb-score">98,340</span>
-      </div>
-      <div class="lb-row">
-        <span class="lb-rank silver">2</span>
-        <div class="lb-avatar" style="background:#0a1a2a; font-size:16px;">🤖</div>
-        <span class="lb-name">CyberWolf</span>
-        <span class="lb-score">87,120</span>
-      </div>
-      <div class="lb-row">
-        <span class="lb-rank bronze">3</span>
-        <div class="lb-avatar" style="background:#1a0a2a; font-size:16px;">⚡</div>
-        <span class="lb-name">StarKnight</span>
-        <span class="lb-score">74,880</span>
-      </div>
-      <div class="lb-row">
-        <span class="lb-rank">4</span>
-        <div class="lb-avatar" style="background:#1a2a0a; font-size:16px;">🐉</div>
-        <span class="lb-name">DragonFire</span>
-        <span class="lb-score">61,500</span>
-      </div>
-      <div class="lb-row">
-        <span class="lb-rank">5</span>
-        <div class="lb-avatar" style="background:#2a0a0a; font-size:16px;">🦊</div>
-        <span class="lb-name">NightFox_SA</span>
-        <span class="lb-score">58,900</span>
+      <div id="leaderboardContent">
+        <!-- Leaderboard will be populated by JavaScript -->
       </div>
     </div>
 
@@ -602,22 +611,924 @@
       <div class="ad-mini-banner">
         <p>Get <strong>100 FREE COINS</strong> when you join!</p>
       </div>
-      <button class="ad-mini-btn">CLAIM BONUS</button>
+      <button class="ad-mini-btn" onclick="showAlert('Bonus claimed! Check your account.')">CLAIM BONUS</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game Modal -->
+<div id="gameModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="gameTitle">Game</div>
+      <button class="close-btn" onclick="closeGameModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="game-score">
+        <div class="score-item">Score: <span id="gameScore">0</span></div>
+        <div class="score-item">Level: <span id="gameLevel">1</span></div>
+        <div class="score-item">Lives: <span id="gameLives">3</span></div>
+      </div>
+      <canvas id="gameCanvas" class="game-canvas"></canvas>
+      <div class="game-controls">
+        <button class="game-btn" onclick="pauseResumeGame()">PAUSE/RESUME</button>
+        <button class="game-btn" onclick="resetGame()">RESET</button>
+        <button class="game-btn" onclick="closeGameModal()">CLOSE</button>
+      </div>
+      <p style="color: #8888cc; margin-top: 15px; text-align: center; font-size: 12px;" id="gameInstructions"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Sign Up Modal -->
+<div id="signUpModal" class="modal">
+  <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-header">
+      <div class="modal-title">SIGN UP</div>
+      <button class="close-btn" onclick="closeSignUpModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="usernameInput" placeholder="Choose Username" style="width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(20,20,50,0.6); border: 1px solid #2a2a5a; color: #e0e0ff; border-radius: 5px; font-family: 'Exo 2', sans-serif;">
+      <button class="game-btn" style="width: 100%; margin-top: 10px;" onclick="signUp()">CREATE ACCOUNT</button>
+      <p style="color: #8888cc; margin-top: 15px; text-align: center; font-size: 11px;">By signing up, you agree to our Terms of Service</p>
     </div>
   </div>
 </div>
 
 <footer>
   <div class="footer-links">
-    <a href="#">About</a>
-    <a href="#">Privacy Policy</a>
-    <a href="#">Terms of Service</a>
-    <a href="#">Advertise With Us</a>
-    <a href="#">Contact</a>
-    <a href="#">Cookie Settings</a>
+    <a onclick="showAlert('About PixelZone')">About</a>
+    <a onclick="showAlert('Privacy Policy')">Privacy Policy</a>
+    <a onclick="showAlert('Terms of Service')">Terms of Service</a>
+    <a onclick="showAlert('Advertise With Us')">Advertise With Us</a>
+    <a onclick="showAlert('Contact Support')">Contact</a>
+    <a onclick="showAlert('Cookie Settings')">Cookie Settings</a>
   </div>
   <p>© 2026 PixelZone. All games are free to play. Play responsibly. Ads help keep the site free.</p>
 </footer>
+
+<script>
+  // Game data
+  const gamesData = [
+    { name: 'STAR BLASTER', genre: 'Shooter', rating: 4.9, emoji: '🚀', color: 'blue', badge: 'HOT', type: 'starblaster' },
+    { name: 'MIND MAZE', genre: 'Puzzle', rating: 4.8, emoji: '🧩', color: 'purple', badge: '', type: 'mindmaze' },
+    { name: 'TURBO DRIFT', genre: 'Racing', rating: 4.7, emoji: '🏎️', color: 'green', badge: 'NEW', type: 'turbodrift' },
+    { name: 'DUNGEON WARS', genre: 'RPG', rating: 4.9, emoji: '⚔️', color: 'red', badge: 'HOT', type: 'dungeonwars' },
+    { name: 'GOAL STRIKER', genre: 'Sports', rating: 4.6, emoji: '⚽', color: 'orange', badge: '', type: 'goalstriker' },
+    { name: 'CARD KING', genre: 'Strategy', rating: 4.8, emoji: '🃏', color: 'teal', badge: 'NEW', type: 'cardking' },
+    { name: 'ALIEN SURGE', genre: 'Arcade', rating: 4.5, emoji: '👾', color: 'purple', badge: 'NEW', type: 'aliensurge' },
+    { name: 'ICE TOWER', genre: 'Platformer', rating: 4.4, emoji: '🧊', color: 'blue', badge: 'NEW', type: 'icetower' },
+    { name: 'JUNGLE RUN', genre: 'Runner', rating: 4.6, emoji: '🌿', color: 'green', badge: 'NEW', type: 'junglerun' },
+  ];
+
+  const leaderboardData = [
+    { rank: 1, name: 'xXProGamer', score: 98340, avatar: '👑', color: '#2a1a00' },
+    { rank: 2, name: 'CyberWolf', score: 87120, avatar: '🤖', color: '#0a1a2a' },
+    { rank: 3, name: 'StarKnight', score: 74880, avatar: '⚡', color: '#1a0a2a' },
+    { rank: 4, name: 'DragonFire', score: 61500, avatar: '🐉', color: '#1a2a0a' },
+    { rank: 5, name: 'NightFox_SA', score: 58900, avatar: '🦊', color: '#2a0a0a' },
+  ];
+
+  let currentUser = null;
+  let currentGameType = null;
+  let gameAnimationId = null;
+  let gameState = {
+    score: 0,
+    level: 1,
+    lives: 3,
+    isPaused: false
+  };
+
+  // Initialize the page
+  function init() {
+    renderHotGames();
+    renderNewGames();
+    renderLeaderboard();
+    loadUser();
+  }
+
+  function renderHotGames() {
+    const hotGames = gamesData.slice(0, 6);
+    const grid = document.getElementById('hotGamesGrid');
+    grid.innerHTML = hotGames.map(game => createGameCard(game)).join('');
+  }
+
+  function renderNewGames() {
+    const newGames = gamesData.slice(6);
+    const grid = document.getElementById('newGamesGrid');
+    grid.innerHTML = newGames.map(game => createGameCard(game)).join('');
+  }
+
+  function createGameCard(game) {
+    const badgeHTML = game.badge ? `<span class="${game.badge === 'HOT' ? 'hot-badge' : 'new-badge'}">${game.badge}</span>` : '';
+    return `
+      <div class="game-card">
+        <div class="game-thumb ${game.color}">${game.emoji}${badgeHTML}</div>
+        <div class="game-info">
+          <div class="game-name">${game.name}</div>
+          <div class="game-meta">
+            <span class="game-genre">${game.genre}</span>
+            <span class="game-rating">★ ${game.rating}</span>
+          </div>
+          <button class="play-btn" onclick="playGame('${game.type}', '${game.name}')">▶ PLAY</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderLeaderboard() {
+    const content = document.getElementById('leaderboardContent');
+    content.innerHTML = leaderboardData.map(player => {
+      let rankClass = '';
+      if (player.rank === 1) rankClass = 'gold';
+      else if (player.rank === 2) rankClass = 'silver';
+      else if (player.rank === 3) rankClass = 'bronze';
+      
+      return `
+        <div class="lb-row">
+          <span class="lb-rank ${rankClass}">${player.rank}</span>
+          <div class="lb-avatar" style="background:${player.color}; font-size:16px;">${player.avatar}</div>
+          <span class="lb-name">${player.name}</span>
+          <span class="lb-score">${player.score.toLocaleString()}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function playGame(gameType, gameName) {
+    if (!currentUser) {
+      showAlert('Please sign up first to play games!');
+      openSignUpModal();
+      return;
+    }
+    
+    currentGameType = gameType;
+    gameState = { score: 0, level: 1, lives: 3, isPaused: false };
+    document.getElementById('gameTitle').textContent = gameName;
+    document.getElementById('gameScore').textContent = '0';
+    document.getElementById('gameLevel').textContent = '1';
+    document.getElementById('gameLives').textContent = '3';
+    document.getElementById('gameModal').classList.add('show');
+    
+    setTimeout(() => initGame(gameType), 100);
+  }
+
+  function initGame(gameType) {
+    const canvas = document.getElementById('gameCanvas');
+    const instructions = document.getElementById('gameInstructions');
+    
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+    switch(gameType) {
+      case 'starblaster':
+        initStarBlaster(canvas, instructions);
+        break;
+      case 'mindmaze':
+        initMindMaze(canvas, instructions);
+        break;
+      case 'turbodrift':
+        initTurboDrift(canvas, instructions);
+        break;
+      case 'dungeonwars':
+        initDungeonWars(canvas, instructions);
+        break;
+      case 'goalstriker':
+        initGoalStriker(canvas, instructions);
+        break;
+      case 'cardking':
+        initCardKing(canvas, instructions);
+        break;
+      default:
+        initDefaultGame(canvas, instructions);
+    }
+  }
+
+  // Star Blaster Game
+  function initStarBlaster(canvas, instructions) {
+    instructions.textContent = 'Use ARROW KEYS to move, SPACE to shoot. Destroy enemies!';
+    const ctx = canvas.getContext('2d');
+    
+    let player = { x: canvas.width / 2 - 15, y: canvas.height - 40, width: 30, height: 30, speed: 5 };
+    let enemies = [];
+    let bullets = [];
+    let keys = {};
+    
+    for (let i = 0; i < 5; i++) {
+      enemies.push({ x: Math.random() * canvas.width, y: Math.random() * 100 + 20, width: 25, height: 25, speed: 2 });
+    }
+    
+    function handleKeyDown(e) {
+      keys[e.key] = true;
+      if (e.key === ' ') {
+        bullets.push({ x: player.x + 15, y: player.y, width: 5, height: 15, speed: 7 });
+        e.preventDefault();
+      }
+    }
+    
+    function handleKeyUp(e) {
+      keys[e.key] = false;
+    }
+    
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw player
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+      
+      // Update player
+      if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+      if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+      
+      // Draw and update bullets
+      ctx.fillStyle = '#ffcc00';
+      bullets.forEach((bullet, index) => {
+        bullet.y -= bullet.speed;
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+        if (bullet.y < 0) bullets.splice(index, 1);
+      });
+      
+      // Draw and update enemies
+      ctx.fillStyle = '#ff2d78';
+      enemies.forEach((enemy, index) => {
+        enemy.x += enemy.speed;
+        if (enemy.x < 0 || enemy.x > canvas.width) enemy.speed *= -1;
+        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+        
+        if (checkCollision(player, enemy)) {
+          gameState.lives--;
+          updateGameUI();
+          if (gameState.lives <= 0) {
+            endGame('GAME OVER!');
+          }
+        }
+      });
+      
+      bullets.forEach((bullet, bIndex) => {
+        enemies.forEach((enemy, eIndex) => {
+          if (checkCollision(bullet, enemy)) {
+            gameState.score += 10;
+            updateGameUI();
+            bullets.splice(bIndex, 1);
+            enemies.splice(eIndex, 1);
+            enemies.push({ x: Math.random() * canvas.width, y: Math.random() * 100 + 20, width: 25, height: 25, speed: 2 });
+          }
+        });
+      });
+      
+      if (!gameState.isPaused) {
+        gameAnimationId = requestAnimationFrame(drawGame);
+      }
+    }
+    
+    drawGame();
+  }
+
+  // Mind Maze Game
+  function initMindMaze(canvas, instructions) {
+    instructions.textContent = 'Click sequence: 1→2→3→4. Match 5 times to complete level!';
+    const ctx = canvas.getContext('2d');
+    
+    let sequence = [];
+    let userSequence = [];
+    let level = 1;
+    let round = 0;
+    const buttonSize = 60;
+    const spacing = 20;
+    
+    const buttons = [
+      { x: 0, y: 0, num: 1, color: '#ff2d78' },
+      { x: 0, y: 0, num: 2, color: '#00f5ff' },
+      { x: 0, y: 0, num: 3, color: '#ffcc00' },
+      { x: 0, y: 0, num: 4, color: '#00ff88' },
+    ];
+    
+    function calculatePositions() {
+      const startX = (canvas.width - (buttonSize * 2 + spacing)) / 2;
+      const startY = (canvas.height - (buttonSize * 2 + spacing)) / 2;
+      buttons[0] = { ...buttons[0], x: startX, y: startY };
+      buttons[1] = { ...buttons[1], x: startX + buttonSize + spacing, y: startY };
+      buttons[2] = { ...buttons[2], x: startX, y: startY + buttonSize + spacing };
+      buttons[3] = { ...buttons[3], x: startX + buttonSize + spacing, y: startY + buttonSize + spacing };
+    }
+    
+    calculatePositions();
+    
+    function generateSequence() {
+      sequence.push(Math.floor(Math.random() * 4));
+      userSequence = [];
+      playSequence();
+    }
+    
+    function playSequence() {
+      let delay = 500;
+      sequence.forEach((num, index) => {
+        setTimeout(() => {
+          drawGame();
+        }, delay + (index * 500));
+      });
+    }
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      buttons.forEach(button => {
+        ctx.fillStyle = button.color + '44';
+        ctx.fillRect(button.x, button.y, buttonSize, buttonSize);
+        ctx.strokeStyle = button.color;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(button.x, button.y, buttonSize, buttonSize);
+        ctx.fillStyle = button.color;
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(button.num, button.x + buttonSize / 2, button.y + buttonSize / 2);
+      });
+      
+      ctx.fillStyle = '#00f5ff';
+      ctx.font = '16px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`Level: ${gameState.level} | Round: ${round} / 5`, canvas.width / 2, 20);
+      
+      gameAnimationId = requestAnimationFrame(drawGame);
+    }
+    
+    function handleButtonClick(num) {
+      userSequence.push(num);
+      
+      if (userSequence[userSequence.length - 1] !== sequence[userSequence.length - 1]) {
+        gameState.lives--;
+        updateGameUI();
+        if (gameState.lives <= 0) {
+          endGame('GAME OVER!');
+        } else {
+          userSequence = [];
+          setTimeout(() => playSequence(), 1000);
+        }
+      } else if (userSequence.length === sequence.length) {
+        round++;
+        if (round === 5) {
+          gameState.level++;
+          gameState.score += 50;
+          round = 0;
+          updateGameUI();
+          setTimeout(() => generateSequence(), 1000);
+        } else {
+          setTimeout(() => generateSequence(), 1000);
+        }
+      }
+    }
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.addEventListener('click', (e) => {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      buttons.forEach(button => {
+        if (x >= button.x && x <= button.x + buttonSize && y >= button.y && y <= button.y + buttonSize) {
+          handleButtonClick(button.num);
+        }
+      });
+    });
+    
+    generateSequence();
+  }
+
+  // Turbo Drift Game
+  function initTurboDrift(canvas, instructions) {
+    instructions.textContent = 'Use ARROW KEYS to dodge obstacles and collect coins!';
+    const ctx = canvas.getContext('2d');
+    
+    let player = { x: canvas.width / 2 - 20, y: canvas.height - 60, width: 40, height: 40, speed: 5 };
+    let obstacles = [];
+    let coins = [];
+    let keys = {};
+    let gameTime = 0;
+    
+    function spawnObstacle() {
+      obstacles.push({ x: Math.random() * (canvas.width - 30), y: 0, width: 30, height: 30, speed: 3 });
+    }
+    
+    function spawnCoin() {
+      coins.push({ x: Math.random() * (canvas.width - 20), y: 0, width: 20, height: 20, speed: 2.5 });
+    }
+    
+    function handleKeyDown(e) {
+      keys[e.key] = true;
+    }
+    
+    function handleKeyUp(e) {
+      keys[e.key] = false;
+    }
+    
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 10]);
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+      
+      if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+      if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+      
+      ctx.fillStyle = '#ff2d78';
+      obstacles.forEach((obstacle, index) => {
+        obstacle.y += obstacle.speed;
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        
+        if (obstacle.y > canvas.height) {
+          obstacles.splice(index, 1);
+          gameState.score += 5;
+          updateGameUI();
+        }
+        
+        if (checkCollision(player, obstacle)) {
+          gameState.lives--;
+          updateGameUI();
+          if (gameState.lives <= 0) {
+            endGame('GAME OVER!');
+          }
+        }
+      });
+      
+      ctx.fillStyle = '#ffcc00';
+      coins.forEach((coin, index) => {
+        coin.y += coin.speed;
+        ctx.beginPath();
+        ctx.arc(coin.x + coin.width / 2, coin.y + coin.height / 2, coin.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        if (coin.y > canvas.height) {
+          coins.splice(index, 1);
+        }
+        
+        if (checkCollision(player, coin)) {
+          gameState.score += 20;
+          updateGameUI();
+          coins.splice(index, 1);
+        }
+      });
+      
+      gameTime++;
+      if (gameTime % 40 === 0) spawnObstacle();
+      if (gameTime % 60 === 0) spawnCoin();
+      
+      if (!gameState.isPaused) {
+        gameAnimationId = requestAnimationFrame(drawGame);
+      }
+    }
+    
+    drawGame();
+  }
+
+  // Dungeon Wars Game
+  function initDungeonWars(canvas, instructions) {
+    instructions.textContent = 'Click monsters to defeat them. Complete 5 rounds to win!';
+    const ctx = canvas.getContext('2d');
+    
+    let monstersDefeated = 0;
+    let totalMonsters = 3;
+    let currentRound = 1;
+    
+    const monsters = [];
+    
+    for (let i = 0; i < totalMonsters; i++) {
+      monsters.push({
+        x: Math.random() * (canvas.width - 50),
+        y: Math.random() * (canvas.height - 150) + 50,
+        width: 50,
+        height: 50,
+        health: 3,
+        maxHealth: 3,
+        emoji: ['👹', '👿', '💀'][i]
+      });
+    }
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#00f5ff';
+      ctx.font = '16px Orbitron';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`Round: ${currentRound} / 5 | Defeated: ${monstersDefeated}`, 20, 20);
+      ctx.fillText(`Score: ${gameState.score}`, 20, 50);
+      
+      monsters.forEach((monster) => {
+        ctx.fillStyle = '#ff2d78';
+        ctx.fillRect(monster.x, monster.y - 10, monster.width, 5);
+        ctx.fillStyle = '#00ff88';
+        ctx.fillRect(monster.x, monster.y - 10, (monster.health / monster.maxHealth) * monster.width, 5);
+        
+        ctx.font = 'bold 40px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(monster.emoji, monster.x + monster.width / 2, monster.y + monster.height / 2);
+      });
+      
+      if (!gameState.isPaused) {
+        gameAnimationId = requestAnimationFrame(drawGame);
+      }
+    }
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.addEventListener('click', (e) => {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      monsters.forEach((monster, index) => {
+        if (x >= monster.x && x <= monster.x + monster.width && y >= monster.y && y <= monster.y + monster.height) {
+          monster.health--;
+          gameState.score += 10;
+          updateGameUI();
+          
+          if (monster.health <= 0) {
+            monsters.splice(index, 1);
+            monstersDefeated++;
+            
+            if (monstersDefeated === totalMonsters) {
+              if (currentRound === 5) {
+                gameState.score += 100;
+                updateGameUI();
+                endGame('YOU WIN!');
+              } else {
+                currentRound++;
+                monstersDefeated = 0;
+                for (let i = 0; i < totalMonsters; i++) {
+                  monsters.push({
+                    x: Math.random() * (canvas.width - 50),
+                    y: Math.random() * (canvas.height - 150) + 50,
+                    width: 50,
+                    height: 50,
+                    health: 2 + Math.floor(currentRound / 2),
+                    maxHealth: 2 + Math.floor(currentRound / 2),
+                    emoji: ['👹', '👿', '💀', '☠️', '🐉'][Math.floor(Math.random() * 5)]
+                  });
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+    
+    drawGame();
+  }
+
+  // Goal Striker Game
+  function initGoalStriker(canvas, instructions) {
+    instructions.textContent = 'Click on the football to kick it into the goal!';
+    const ctx = canvas.getContext('2d');
+    
+    let ball = { x: canvas.width / 2, y: canvas.height - 80, radius: 8 };
+    let goal = { x: canvas.width / 2 - 40, y: 30, width: 80, height: 40 };
+    let shots = 0;
+    let goals = 0;
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+      
+      ctx.fillStyle = '#00ff8844';
+      ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+      ctx.strokeStyle = '#00ff88';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(goal.x, goal.y, goal.width, goal.height);
+      
+      ctx.fillStyle = '#ffcc00';
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#00f5ff';
+      ctx.font = '16px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`Shots: ${shots} | Goals: ${goals} | Score: ${gameState.score}`, canvas.width / 2, 20);
+      
+      gameAnimationId = requestAnimationFrame(drawGame);
+    }
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.addEventListener('click', (e) => {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      if (Math.hypot(x - ball.x, y - ball.y) < 30) {
+        shots++;
+        let vx = (x - ball.x) * 0.05;
+        let vy = (y - ball.y) * 0.05 - 8;
+        let ballX = ball.x;
+        let ballY = ball.y;
+        
+        function animate() {
+          ballX += vx;
+          ballY += vy;
+          vy += 0.2;
+          
+          if (ballY > canvas.height || ballX < 0 || ballX > canvas.width) {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height - 80;
+            return;
+          }
+          
+          if (ballX >= goal.x && ballX <= goal.x + goal.width && ballY >= goal.y && ballY <= goal.y + goal.height) {
+            goals++;
+            gameState.score += 50;
+            updateGameUI();
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height - 80;
+            return;
+          }
+          
+          requestAnimationFrame(animate);
+        }
+        
+        animate();
+      }
+    });
+    
+    drawGame();
+  }
+
+  // Card King Game
+  function initCardKing(canvas, instructions) {
+    instructions.textContent = 'Match pairs of cards by clicking them!';
+    const ctx = canvas.getContext('2d');
+    
+    const cards = ['🌟', '🎮', '🏆', '💎', '🌟', '🎮', '🏆', '💎'];
+    const shuffled = cards.sort(() => Math.random() - 0.5);
+    const cardStates = new Array(8).fill(false);
+    let flipped = [];
+    let matched = 0;
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const cardWidth = 60;
+      const cardHeight = 60;
+      const gap = 10;
+      const cols = 4;
+      const startX = (canvas.width - (cols * cardWidth + (cols - 1) * gap)) / 2;
+      const startY = (canvas.height - (2 * cardHeight + gap)) / 2;
+      
+      for (let i = 0; i < 8; i++) {
+        const col = i % 4;
+        const row = Math.floor(i / 4);
+        const x = startX + col * (cardWidth + gap);
+        const y = startY + row * (cardHeight + gap);
+        
+        ctx.strokeStyle = '#00f5ff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, cardWidth, cardHeight);
+        
+        if (cardStates[i]) {
+          ctx.fillStyle = '#00f5ff22';
+          ctx.fillRect(x, y, cardWidth, cardHeight);
+          ctx.fillStyle = '#00f5ff';
+          ctx.font = 'bold 30px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(shuffled[i], x + cardWidth / 2, y + cardHeight / 2);
+        } else {
+          ctx.fillStyle = '#2a2a5a';
+          ctx.fillRect(x, y, cardWidth, cardHeight);
+          ctx.fillStyle = '#8888cc';
+          ctx.font = 'bold 30px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('?', x + cardWidth / 2, y + cardHeight / 2);
+        }
+      }
+      
+      ctx.fillStyle = '#00f5ff';
+      ctx.font = '16px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`Matched: ${matched} / 4 | Score: ${gameState.score}`, canvas.width / 2, 30);
+      
+      gameAnimationId = requestAnimationFrame(drawGame);
+    }
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.addEventListener('click', (e) => {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const cardWidth = 60;
+      const cardHeight = 60;
+      const gap = 10;
+      const cols = 4;
+      const startX = (canvas.width - (cols * cardWidth + (cols - 1) * gap)) / 2;
+      const startY = (canvas.height - (2 * cardHeight + gap)) / 2;
+      
+      for (let i = 0; i < 8; i++) {
+        if (!cardStates[i] && flipped.length < 2) {
+          const col = i % 4;
+          const row = Math.floor(i / 4);
+          const cardX = startX + col * (cardWidth + gap);
+          const cardY = startY + row * (cardHeight + gap);
+          
+          if (x >= cardX && x <= cardX + cardWidth && y >= cardY && y <= cardY + cardHeight) {
+            cardStates[i] = true;
+            flipped.push(i);
+            
+            if (flipped.length === 2) {
+              if (shuffled[flipped[0]] === shuffled[flipped[1]]) {
+                matched++;
+                gameState.score += 25;
+                updateGameUI();
+                flipped = [];
+                if (matched === 4) {
+                  endGame('YOU WIN!');
+                }
+              } else {
+                setTimeout(() => {
+                  cardStates[flipped[0]] = false;
+                  cardStates[flipped[1]] = false;
+                  flipped = [];
+                }, 1000);
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    drawGame();
+  }
+
+  function initDefaultGame(canvas, instructions) {
+    instructions.textContent = 'Click anywhere to increase your score!';
+    const ctx = canvas.getContext('2d');
+    let clickCount = 0;
+    
+    function drawGame() {
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#00f5ff';
+      ctx.font = 'bold 40px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('CLICK ME!', canvas.width / 2, canvas.height / 2 - 50);
+      
+      ctx.font = '24px Orbitron';
+      ctx.fillText(`Clicks: ${clickCount}`, canvas.width / 2, canvas.height / 2 + 50);
+      
+      if (!gameState.isPaused) {
+        gameAnimationId = requestAnimationFrame(drawGame);
+      }
+    }
+    
+    canvas.addEventListener('click', () => {
+      clickCount++;
+      gameState.score += 10;
+      updateGameUI();
+    });
+    
+    drawGame();
+  }
+
+  function checkCollision(rect1, rect2) {
+    return rect1.x < rect2.x + rect2.width &&
+           rect1.x + rect1.width > rect2.x &&
+           rect1.y < rect2.y + rect2.height &&
+           rect1.y + rect1.height > rect2.y;
+  }
+
+  function updateGameUI() {
+    document.getElementById('gameScore').textContent = gameState.score;
+    document.getElementById('gameLevel').textContent = gameState.level;
+    document.getElementById('gameLives').textContent = gameState.lives;
+  }
+
+  function pauseResumeGame() {
+    gameState.isPaused = !gameState.isPaused;
+    if (!gameState.isPaused) {
+      gameAnimationId = requestAnimationFrame(() => initGame(currentGameType));
+    }
+  }
+
+  function resetGame() {
+    if (gameAnimationId) cancelAnimationFrame(gameAnimationId);
+    gameState = { score: 0, level: 1, lives: 3, isPaused: false };
+    updateGameUI();
+    initGame(currentGameType);
+  }
+
+  function endGame(message) {
+    if (gameAnimationId) cancelAnimationFrame(gameAnimationId);
+    showAlert(`${message}\nFinal Score: ${gameState.score}`);
+    closeGameModal();
+  }
+
+  function closeGameModal() {
+    document.getElementById('gameModal').classList.remove('show');
+    if (gameAnimationId) cancelAnimationFrame(gameAnimationId);
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function openSignUpModal() {
+    document.getElementById('signUpModal').classList.add('show');
+  }
+
+  function closeSignUpModal() {
+    document.getElementById('signUpModal').classList.remove('show');
+  }
+
+  function signUp() {
+    const username = document.getElementById('usernameInput').value.trim();
+    if (username.length < 3) {
+      showAlert('Username must be at least 3 characters long!');
+      return;
+    }
+    currentUser = username;
+    localStorage.setItem('pixelZoneUser', username);
+    document.getElementById('userGreeting').textContent = username;
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+    document.getElementById('signupBtn').style.display = 'none';
+    closeSignUpModal();
+    document.getElementById('usernameInput').value = '';
+    showAlert(`Welcome, ${username}! Start playing now!`);
+  }
+
+  function loadUser() {
+    const savedUser = localStorage.getItem('pixelZoneUser');
+    if (savedUser) {
+      currentUser = savedUser;
+      document.getElementById('userGreeting').textContent = savedUser;
+      document.getElementById('userAvatar').textContent = savedUser.charAt(0).toUpperCase();
+      document.getElementById('signupBtn').style.display = 'none';
+    }
+  }
+
+  function showAlert(message) {
+    alert(message);
+  }
+
+  function navigateTo(section) {
+    if (!currentUser) {
+      showAlert('Please sign up first!');
+      openSignUpModal();
+      return;
+    }
+    showAlert(`Navigating to ${section}...`);
+  }
+
+  function toggleUserMenu() {
+    if (currentUser) {
+      if (confirm(`Logged in as: ${currentUser}\n\nClick OK to logout`)) {
+        currentUser = null;
+        localStorage.removeItem('pixelZoneUser');
+        document.getElementById('userGreeting').textContent = 'Guest';
+        document.getElementById('userAvatar').textContent = 'G';
+        document.getElementById('signupBtn').style.display = 'block';
+        showAlert('Logged out successfully!');
+      }
+    } else {
+      openSignUpModal();
+    }
+  }
+
+  function updatePlayerCount() {
+    const counts = ['2.4M', '2.5M', '2.3M', '2.6M'];
+    const randomCount = counts[Math.floor(Math.random() * counts.length)];
+    document.getElementById('playersOnline').textContent = randomCount;
+  }
+
+  setInterval(updatePlayerCount, 5000);
+
+  window.addEventListener('load', init);
+</script>
 
 </body>
 </html>
