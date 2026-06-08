@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelZone - Free Online Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a1a;
+    color: #e0e0ff;
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .scanlines {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+    background: rgba(10,10,30,0.95);
+    border-bottom: 1px solid #2a2a5a;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px; font-weight: 900;
+    color: #00f5ff;
+    text-shadow: 0 0 20px rgba(0,245,255,0.5);
+    letter-spacing: 2px;
+  }
+
+  .logo span { color: #ff2d78; }
+
+  nav { display: flex; gap: 24px; }
+  nav a {
+    color: #8888cc; text-decoration: none; font-size: 14px;
+    font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: #00f5ff; }
+
+  .nav-btn {
+    background: linear-gradient(135deg, #ff2d78, #ff6b2d);
+    border: none; color: #fff; padding: 8px 20px;
+    border-radius: 6px; font-family: 'Orbitron', monospace;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  .ad-banner {
+    background: rgba(20,20,50,0.8);
+    border: 1px solid #2a2a5a;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; padding: 12px 20px; margin: 16px 28px;
+    text-align: center;
+  }
+  .ad-label {
+    font-size: 9px; color: #555588; letter-spacing: 2px;
+    text-transform: uppercase; border: 1px solid #333366;
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .ad-content { color: #aaaaee; font-size: 14px; }
+  .ad-content strong { color: #00f5ff; }
+  .ad-cta {
+    background: #ff2d78; color: #fff; border: none;
+    padding: 6px 16px; border-radius: 4px; font-size: 12px;
+    font-weight: 700; cursor: pointer; font-family: 'Orbitron', monospace;
+  }
+
+  .hero {
+    text-align: center; padding: 50px 28px 30px;
+    position: relative;
+  }
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 48px; font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #00f5ff, #ff2d78, #ffcc00);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+  .hero-sub { color: #8888cc; font-size: 16px; max-width: 500px; margin: 0 auto 28px; }
+  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #00f5ff22, #00f5ff44);
+    border: 1px solid #00f5ff;
+    color: #00f5ff; padding: 12px 30px;
+    border-radius: 6px; font-family: 'Orbitron', monospace;
+    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: #00f5ff; color: #0a0a1a; }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #ff2d7822, #ff2d7844);
+    border: 1px solid #ff2d78;
+    color: #ff2d78; padding: 12px 30px;
+    border-radius: 6px; font-family: 'Orbitron', monospace;
+    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: #ff2d78; color: #fff; }
+
+  .stats-bar {
+    display: flex; gap: 0; margin: 0 28px 24px;
+    background: rgba(20,20,50,0.6);
+    border: 1px solid #2a2a5a; border-radius: 10px; overflow: hidden;
+  }
+  .stat-item {
+    flex: 1; text-align: center; padding: 14px 12px;
+    border-right: 1px solid #2a2a5a;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; }
+  .stat-num.cyan { color: #00f5ff; }
+  .stat-num.pink { color: #ff2d78; }
+  .stat-num.gold { color: #ffcc00; }
+  .stat-num.green { color: #00ff88; }
+  .stat-lbl { font-size: 11px; color: #666699; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 20px;
+    padding: 0 28px 28px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px; font-weight: 700;
+    color: #00f5ff; letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: linear-gradient(to right, #2a2a5a, transparent);
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 24px;
+  }
+
+  .game-card {
+    background: rgba(20,20,50,0.7);
+    border: 1px solid #2a2a5a;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s; cursor: pointer;
+  }
+  .game-card:hover {
+    border-color: #00f5ff44;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,245,255,0.1);
+  }
+
+  .game-thumb {
+    height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px;
+    position: relative; overflow: hidden;
+  }
+  .game-thumb.blue { background: linear-gradient(135deg, #0a1628, #1a3a6a); }
+  .game-thumb.purple { background: linear-gradient(135deg, #1a0a28, #3a1a6a); }
+  .game-thumb.green { background: linear-gradient(135deg, #0a2810, #1a6a2a); }
+  .game-thumb.red { background: linear-gradient(135deg, #280a0a, #6a1a1a); }
+  .game-thumb.orange { background: linear-gradient(135deg, #281a0a, #6a3a0a); }
+  .game-thumb.teal { background: linear-gradient(135deg, #0a2828, #1a5a5a); }
+
+  .hot-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: #ff2d78; color: #fff;
+    font-size: 9px; font-weight: 700; padding: 3px 8px;
+    border-radius: 10px; font-family: 'Orbitron', monospace; letter-spacing: 1px;
+  }
+  .new-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: #00ff88; color: #0a0a1a;
+    font-size: 9px; font-weight: 700; padding: 3px 8px;
+    border-radius: 10px; font-family: 'Orbitron', monospace; letter-spacing: 1px;
+  }
+
+  .game-info { padding: 12px 14px; }
+  .game-name {
+    font-family: 'Orbitron', monospace; font-size: 13px;
+    font-weight: 700; color: #e0e0ff; margin-bottom: 4px;
+  }
+  .game-meta { display: flex; justify-content: space-between; align-items: center; }
+  .game-genre { font-size: 11px; color: #666699; }
+  .game-rating { font-size: 12px; color: #ffcc00; }
+
+  .play-btn {
+    width: 100%; margin-top: 10px;
+    background: transparent; border: 1px solid #2a2a5a;
+    color: #8888cc; padding: 7px; border-radius: 5px;
+    font-size: 12px; font-family: 'Orbitron', monospace;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+  }
+  .play-btn:hover { border-color: #00f5ff; color: #00f5ff; background: rgba(0,245,255,0.05); }
+
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+  .sidebar-ad {
+    background: rgba(20,20,50,0.8);
+    border: 1px solid #2a2a5a; border-radius: 10px;
+    padding: 14px; text-align: center;
+  }
+  .sidebar-ad .ad-label { margin-bottom: 10px; display: inline-block; }
+  .sidebar-ad-img {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, #1a0a28, #2a0a5a);
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; font-size: 36px; margin-bottom: 10px;
+    border: 1px solid #3a1a7a;
+  }
+  .sidebar-ad p { font-size: 12px; color: #aaaacc; margin-bottom: 8px; }
+  .sidebar-ad strong { color: #ff2d78; }
+  .sidebar-ad-btn {
+    width: 100%; background: linear-gradient(135deg, #ff2d78, #ff6b2d);
+    border: none; color: #fff; padding: 8px;
+    border-radius: 5px; font-size: 11px; font-family: 'Orbitron', monospace;
+    font-weight: 700; cursor: pointer; letter-spacing: 1px;
+  }
+
+  .leaderboard {
+    background: rgba(20,20,50,0.7);
+    border: 1px solid #2a2a5a; border-radius: 10px; padding: 14px;
+  }
+  .lb-title {
+    font-family: 'Orbitron', monospace; font-size: 12px;
+    font-weight: 700; color: #ffcc00; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .lb-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid #1a1a3a;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-rank { font-family: 'Orbitron', monospace; font-size: 11px; color: #555588; width: 16px; }
+  .lb-rank.gold { color: #ffcc00; }
+  .lb-rank.silver { color: #b0b0cc; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .lb-name { flex: 1; font-size: 12px; color: #ccccee; }
+  .lb-score { font-family: 'Orbitron', monospace; font-size: 11px; color: #00f5ff; }
+
+  .sidebar-small-ad {
+    background: rgba(20,20,50,0.8);
+    border: 1px solid #2a2a5a; border-radius: 10px;
+    padding: 12px; text-align: center;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .sidebar-small-ad .ad-label { display: inline-block; margin-bottom: 2px; }
+  .ad-mini-banner {
+    background: linear-gradient(135deg, #001428, #002856);
+    border-radius: 6px; padding: 14px 10px;
+    border: 1px solid #003a7a;
+  }
+  .ad-mini-banner p { font-size: 13px; color: #8ac4ff; font-weight: 600; }
+  .ad-mini-banner strong { color: #fff; font-family: 'Orbitron', monospace; font-size: 15px; display: block; }
+  .ad-mini-btn {
+    width: 100%; background: #0066ff; border: none;
+    color: #fff; padding: 7px; border-radius: 5px;
+    font-size: 11px; font-family: 'Orbitron', monospace;
+    font-weight: 700; cursor: pointer; letter-spacing: 1px;
+  }
+
+  .in-content-ad {
+    background: rgba(20,20,50,0.6);
+    border: 1px solid #2a2a5a; border-radius: 10px;
+    padding: 16px 20px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .ic-ad-icon { font-size: 40px; flex-shrink: 0; }
+  .ic-ad-text { flex: 1; }
+  .ic-ad-text h3 { font-family: 'Orbitron', monospace; font-size: 14px; color: #ffcc00; margin-bottom: 4px; }
+  .ic-ad-text p { font-size: 12px; color: #8888aa; }
+  .ic-ad-btn {
+    background: linear-gradient(135deg, #ffcc00, #ff8800);
+    border: none; color: #0a0a1a; padding: 10px 20px;
+    border-radius: 6px; font-family: 'Orbitron', monospace;
+    font-size: 11px; font-weight: 900; cursor: pointer; letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  footer {
+    background: rgba(5,5,15,0.95);
+    border-top: 1px solid #1a1a3a;
+    padding: 28px; text-align: center;
+    color: #444466; font-size: 13px;
+  }
+  footer .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap; }
+  footer .footer-links a { color: #555588; text-decoration: none; font-size: 12px; }
+  footer .footer-links a:hover { color: #8888cc; }
+
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  .live-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; margin-right: 6px; }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<header>
+  <div class="logo">PIXEL<span>ZONE</span></div>
+  <nav>
+    <a href="#">Games</a>
+    <a href="#">Leaderboard</a>
+    <a href="#">Tournaments</a>
+    <a href="#">Community</a>
+  </nav>
+  <button class="nav-btn">SIGN UP FREE</button>
+</header>
+
+<!-- TOP AD BANNER -->
+<div class="ad-banner">
+  <span class="ad-label">AD</span>
+  <div class="ad-content">🎮 <strong>GameFuel Energy Drink</strong> — The official drink of champions. Get 20% off your first order!</div>
+  <button class="ad-cta">SHOP NOW</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-title">PLAY.<br>COMPETE.<br>WIN.</div>
+  <p class="hero-sub">500+ free games. Real prizes. Global leaderboards. No download needed.</p>
+  <div class="hero-btns">
+    <button class="btn-primary">▶ PLAY NOW</button>
+    <button class="btn-secondary">🏆 VIEW TOURNAMENTS</button>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num cyan">2.4M</div>
+    <div class="stat-lbl">Players Online</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num pink">500+</div>
+    <div class="stat-lbl">Free Games</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num gold">$50K</div>
+    <div class="stat-lbl">Monthly Prizes</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num green"><span class="live-dot"></span>LIVE</div>
+    <div class="stat-lbl">Tournaments Now</div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+  <div class="content">
+    <div class="section-title">🔥 HOT GAMES</div>
+    <div class="games-grid">
+      <div class="game-card">
+        <div class="game-thumb blue">🚀<span class="hot-badge">HOT</span></div>
+        <div class="game-info">
+          <div class="game-name">STAR BLASTER</div>
+          <div class="game-meta">
+            <span class="game-genre">Shooter</span>
+            <span class="game-rating">★ 4.9</span>
+          </div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb purple">🧩</div>
+        <div class="game-info">
+          <div class="game-name">MIND MAZE</div>
+          <div class="game-meta">
+            <span class="game-genre">Puzzle</span>
+            <span class="game-rating">★ 4.8</span>
+          </div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb green">🏎️<span class="new-badge">NEW</span></div>
+        <div class="game-info">
+          <div class="game-name">TURBO DRIFT</div>
+          <div class="game-meta">
+            <span class="game-genre">Racing</span>
+            <span class="game-rating">★ 4.7</span>
+          </div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb red">⚔️<span class="hot-badge">HOT</span></div>
+        <div class="game-info">
+          <div class="game-name">DUNGEON WARS</div>
+          <div class="game-meta">
+            <span class="game-genre">RPG</span>
+            <span class="game-rating">★ 4.9</span>
+          </div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb orange">⚽</div>
+        <div class="game-info">
+          <div class="game-name">GOAL STRIKER</div>
+          <div class="game-meta">
+            <span class="game-genre">Sports</span>
+            <span class="game-rating">★ 4.6</span>
+          </div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb teal">🃏<span class="new-badge">NEW</span></div>
+        <div class="game-info">
+          <div class="game-name">CARD KING</div>
+          <div class="game-meta">
+            <span class="game-genre">Strategy</span>
+            <span class="game-rating">★ 4.8</span>
+          </div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-CONTENT AD -->
+    <div class="in-content-ad">
+      <span class="ad-label">AD</span>
+      <div class="ic-ad-icon">🖥️</div>
+      <div class="ic-ad-text">
+        <h3>UPGRADE YOUR SETUP</h3>
+        <p>ProGear Gaming Chairs — engineered for marathon sessions. Free shipping on orders over R1,500.</p>
+      </div>
+      <button class="ic-ad-btn">GET 15% OFF</button>
+    </div>
+
+    <div class="section-title">⚡ NEW RELEASES</div>
+    <div class="games-grid">
+      <div class="game-card">
+        <div class="game-thumb purple">👾<span class="new-badge">NEW</span></div>
+        <div class="game-info">
+          <div class="game-name">ALIEN SURGE</div>
+          <div class="game-meta"><span class="game-genre">Arcade</span><span class="game-rating">★ 4.5</span></div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb blue">🧊<span class="new-badge">NEW</span></div>
+        <div class="game-info">
+          <div class="game-name">ICE TOWER</div>
+          <div class="game-meta"><span class="game-genre">Platformer</span><span class="game-rating">★ 4.4</span></div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-thumb green">🌿<span class="new-badge">NEW</span></div>
+        <div class="game-info">
+          <div class="game-name">JUNGLE RUN</div>
+          <div class="game-meta"><span class="game-genre">Runner</span><span class="game-rating">★ 4.6</span></div>
+          <button class="play-btn">▶ PLAY</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-ad">
+      <span class="ad-label">SPONSORED</span>
+      <div class="sidebar-ad-img">🎧</div>
+      <p><strong>HyperX Cloud III</strong> — Hear every enemy footstep</p>
+      <button class="sidebar-ad-btn">BUY NOW</button>
+    </div>
+
+    <div class="leaderboard">
+      <div class="lb-title">🏆 TOP PLAYERS</div>
+      <div class="lb-row">
+        <span class="lb-rank gold">1</span>
+        <div class="lb-avatar" style="background:#2a1a00; font-size:16px;">👑</div>
+        <span class="lb-name">xXProGamer</span>
+        <span class="lb-score">98,340</span>
+      </div>
+      <div class="lb-row">
+        <span class="lb-rank silver">2</span>
+        <div class="lb-avatar" style="background:#0a1a2a; font-size:16px;">🤖</div>
+        <span class="lb-name">CyberWolf</span>
+        <span class="lb-score">87,120</span>
+      </div>
+      <div class="lb-row">
+        <span class="lb-rank bronze">3</span>
+        <div class="lb-avatar" style="background:#1a0a2a; font-size:16px;">⚡</div>
+        <span class="lb-name">StarKnight</span>
+        <span class="lb-score">74,880</span>
+      </div>
+      <div class="lb-row">
+        <span class="lb-rank">4</span>
+        <div class="lb-avatar" style="background:#1a2a0a; font-size:16px;">🐉</div>
+        <span class="lb-name">DragonFire</span>
+        <span class="lb-score">61,500</span>
+      </div>
+      <div class="lb-row">
+        <span class="lb-rank">5</span>
+        <div class="lb-avatar" style="background:#2a0a0a; font-size:16px;">🦊</div>
+        <span class="lb-name">NightFox_SA</span>
+        <span class="lb-score">58,900</span>
+      </div>
+    </div>
+
+    <div class="sidebar-small-ad">
+      <span class="ad-label">AD</span>
+      <div class="ad-mini-banner">
+        <p>Get <strong>100 FREE COINS</strong> when you join!</p>
+      </div>
+      <button class="ad-mini-btn">CLAIM BONUS</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Advertise With Us</a>
+    <a href="#">Contact</a>
+    <a href="#">Cookie Settings</a>
+  </div>
+  <p>© 2026 PixelZone. All games are free to play. Play responsibly. Ads help keep the site free.</p>
+</footer>
+
+</body>
+</html>
